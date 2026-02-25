@@ -22,9 +22,13 @@ const PORT = process.env.PORT || 5000;
 let MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/smarttodo';
 
 const connectDB = async () => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
+
   try {
-    // Try remote/local first
-    await mongoose.connect(MONGO_URI);
+    // Try remote/local first with a shorter timeout
+    await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 });
     console.log('✅ MongoDB connected successfully');
   } catch (err) {
     console.log('⚠️ Failed to connect to provided MongoDB URI. Starting in-memory database instead...');
@@ -40,10 +44,6 @@ const connectDB = async () => {
       process.exit(1);
     }
   }
-
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-  });
 };
 
 connectDB();
